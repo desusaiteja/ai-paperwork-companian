@@ -51,7 +51,20 @@ The local helper handles file organization:
 
 ## Install
 
-Clone this repo, then run:
+1. Install and open Ara for macOS.
+
+2. Make sure Ara has access to Gmail and local files. The workflow works best
+   when Ara can search Gmail, download attachments, and run local shell
+   commands.
+
+3. Clone this repo:
+
+```bash
+git clone https://github.com/desusaiteja/ai-paperwork-companian.git
+cd ai-paperwork-companian
+```
+
+4. Install the Ara skill:
 
 ```bash
 "./install_native_ara_skill.sh"
@@ -64,6 +77,29 @@ This installs the Ara skill into:
 ```
 
 Restart Ara after installing so it can load the skill.
+
+## Replicate The Ara Setup
+
+To use this workflow on another Mac:
+
+1. Clone this repo on that Mac.
+2. Run `./install_native_ara_skill.sh`.
+3. Restart Ara.
+4. Sign in to Gmail in the browser/account Ara uses.
+5. Give Ara permission to download files and access local folders if macOS asks.
+6. Say `Ara, gather everything I need for my taxes`.
+
+Ara should then follow the installed skill:
+
+- Search Gmail with tax-document queries.
+- Download matching attachments.
+- Save them to `~/Downloads/Ara Tax Inbox` when possible.
+- Run `./ara_native_handoff.sh`.
+- Organize matches into `~/Documents/Ara Paperwork/<tax-year>`.
+
+If Ara finds emails but does not download attachments, the local helper can only
+organize files that already exist on the Mac. The Gmail download step is the
+part Ara must perform.
 
 ## Use With Ara Voice
 
@@ -130,6 +166,14 @@ For a specific year:
 
 This does not search Gmail by itself. It only scans local files that already
 exist on your Mac.
+
+## Troubleshooting
+
+- If Ara does not trigger the skill, restart Ara and say the command again.
+- If no files are gathered, check whether Gmail attachments were actually downloaded.
+- If Gmail downloads to `~/Downloads` instead of `~/Downloads/Ara Tax Inbox`, that is okay.
+- If macOS blocks folder access, allow Ara or the terminal app to access Downloads, Documents, and Desktop.
+- If you only run `./ara_native_handoff.sh`, Gmail is not searched. That command only organizes local files.
 
 ## Important Notes
 
