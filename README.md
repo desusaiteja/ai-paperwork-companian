@@ -1,35 +1,71 @@
 # Ara Paperwork Companion
 
-Ara Paperwork Companion is a voice-driven tax document gatherer for Ara on macOS.
-It helps Ara search Gmail for real tax-related attachments, scan local folders,
-classify likely tax documents, and organize them into an accountant-ready folder.
+Ara Paperwork Companion is a small local workflow for Ara on macOS. It helps
+Ara gather real tax documents, organize them by year and category, and create a
+short summary you can share with an accountant.
 
 ## What It Does
 
-- Uses Ara voice commands such as `Ara, gather everything I need for my taxes`.
-- Guides Ara to search Gmail and download real tax attachments.
-- Scans `~/Downloads/Ara Tax Inbox`, `~/Downloads`, `~/Documents`, and `~/Desktop`.
-- Copies matching files into `~/Documents/Ara Paperwork/<tax-year>`.
-- Categorizes documents into `Income`, `Donations`, `Investments`, `Medical`, and `Other`.
-- Writes `summary.json` and `SUMMARY.txt`.
+When you ask Ara to gather tax documents, this workflow tells Ara to:
 
-## Files
+- Search Gmail for likely tax forms and receipts.
+- Download real tax-related attachments.
+- Scan common local folders on your Mac.
+- Copy matching files into one organized tax folder.
+- Rename files into a consistent format.
+- Write a JSON summary and a readable text summary.
 
-- `skills/ara-tax-gatherer/SKILL.md`: Ara skill instructions.
-- `install_native_ara_skill.sh`: Installs the Ara skill into `~/.claude/skills`.
-- `ara_native_handoff.sh`: One-command entrypoint used by Ara after Gmail downloads.
-- `run_native_ara_tax_workflow.sh`: Builds the default local scan command.
-- `ara_tax_helper.py`: Classifies, renames, copies, and summarizes documents.
+The output folder is:
+
+```text
+~/Documents/Ara Paperwork/<tax-year>
+```
+
+Inside it, files are grouped into:
+
+- `Income`
+- `Donations`
+- `Investments`
+- `Medical`
+- `Other`
+
+## How It Works With Ara
+
+This repo provides an Ara skill plus a local helper script.
+
+Ara handles the voice and Gmail parts:
+
+- Understands your voice command.
+- Searches Gmail.
+- Downloads matching attachments.
+- Runs the local workflow command.
+
+The local helper handles file organization:
+
+- Scans `~/Downloads/Ara Tax Inbox`.
+- Scans `~/Downloads`, `~/Documents`, and `~/Desktop`.
+- Classifies likely tax documents.
+- Copies and renames matches.
+- Opens the organized folder.
+- Speaks a short completion summary.
 
 ## Install
 
+Clone this repo, then run:
+
 ```bash
-"/Users/saitejadesu/Personal/Open Source/ai-paperwork-companian/install_native_ara_skill.sh"
+"./install_native_ara_skill.sh"
 ```
 
-Restart Ara after installing if it does not pick up the skill immediately.
+This installs the Ara skill into:
 
-## Voice Usage
+```text
+~/.claude/skills/ara-tax-gatherer/SKILL.md
+```
+
+Restart Ara after installing so it can load the skill.
+
+## Use With Ara Voice
 
 Say:
 
@@ -37,27 +73,75 @@ Say:
 Ara, gather everything I need for my taxes
 ```
 
-For a specific year:
+For a specific year, say:
 
 ```text
 Ara, gather everything I need for my 2024 taxes
 ```
 
-## Local Command
-
-Ara should run this after attempting Gmail attachment downloads:
+Ara should search Gmail, download matching attachments, and then run the local
+handoff command:
 
 ```bash
-"/Users/saitejadesu/Personal/Open Source/ai-paperwork-companian/ara_native_handoff.sh"
+"./ara_native_handoff.sh"
+```
+
+For a specific year, Ara can run:
+
+```bash
+"./ara_native_handoff.sh" --year 2024
+```
+
+## What Gmail Searches For
+
+The skill asks Ara to look for common tax documents such as:
+
+- W-2 forms
+- 1099 forms
+- 1099-INT bank interest statements
+- 1099-DIV and brokerage statements
+- 1098 mortgage interest forms
+- Donation receipts
+- Medical, dental, pharmacy, HSA, and FSA receipts
+- Year-end financial statements
+
+Downloaded attachments should go into:
+
+```text
+~/Downloads/Ara Tax Inbox
+```
+
+If Gmail saves them to the normal Downloads folder instead, that is fine. The
+helper scans both locations.
+
+## Run The Local Workflow Manually
+
+You can also run the local organizer yourself:
+
+```bash
+"./ara_native_handoff.sh"
 ```
 
 For a specific year:
 
 ```bash
-"/Users/saitejadesu/Personal/Open Source/ai-paperwork-companian/ara_native_handoff.sh" --year 2024
+"./ara_native_handoff.sh" --year 2024
 ```
 
-## Boundaries
+This does not search Gmail by itself. It only scans local files that already
+exist on your Mac.
 
-This project gathers and organizes documents only. It does not file taxes,
-calculate taxes, or provide tax, legal, financial, or medical advice.
+## Important Notes
+
+- This project does not file taxes.
+- This project does not calculate taxes.
+- This project does not provide tax, legal, financial, or medical advice.
+- It only gathers, copies, renames, organizes, and summarizes documents.
+
+## Project Files
+
+- `skills/ara-tax-gatherer/SKILL.md`: Instructions Ara reads for the voice workflow.
+- `install_native_ara_skill.sh`: Installs the Ara skill locally.
+- `ara_native_handoff.sh`: Entry point Ara runs after Gmail downloads.
+- `run_native_ara_tax_workflow.sh`: Builds the default scan command.
+- `ara_tax_helper.py`: Classifies and organizes files.
